@@ -1,0 +1,33 @@
+name: macOS
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up CocoaPods
+      uses: maxim-lobanov/setup-cocoapods@v1
+      with:
+        podfile-path: macos/Podfile.lock
+
+    - name: Install dependencies
+      run: |
+        brew update
+        brew install swig
+
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+        architecture: 'x64'
+        flutter-version: '3.24.0'
+    - run: flutter config --enable-macos-desktop
+    - run: flutter --version
+
+    - name: Build the app
+      run: |
+        flutter build macos
